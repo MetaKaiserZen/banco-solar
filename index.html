@@ -200,6 +200,7 @@
       const { data } = await axios.put(
         `http://localhost:3000/usuario?id=${id}`,
         {
+          id: id,
           name,
           balance,
         }
