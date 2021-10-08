@@ -79,6 +79,16 @@ const editar = async (datos) =>
 
 const eliminar = async (id) =>
 {
+    const emisor =
+    {
+        text: `DELETE FROM transferencias WHERE emisor = ${id}`,
+    };
+
+    const receptor =
+    {
+        text: `DELETE FROM transferencias WHERE receptor = ${id}`,
+    };
+
     const consulta =
     {
         text: `DELETE FROM usuarios WHERE id = ${id}`,
@@ -86,6 +96,9 @@ const eliminar = async (id) =>
 
     try
     {
+        await pool.query(emisor);
+        await pool.query(receptor);
+
         const resultado = await pool.query(consulta);
 
         return resultado;
@@ -98,4 +111,30 @@ const eliminar = async (id) =>
     }
 };
 
-module.exports = { insertar, consultar, editar, eliminar };
+const transferir = async () =>
+{
+    //
+};
+
+const movimiento = async () =>
+{
+    const consulta =
+    {
+        text: 'SELECT fecha, (SELECT nombre FROM usuarios WHERE id = emisor) AS emisor, (SELECT nombre FROM usuarios WHERE id = receptor) AS receptor, monto FROM transferencias',
+    }
+
+    try
+    {
+        const resultado = await pool.query(consulta);
+
+        return resultado.rows;
+    }
+    catch (error)
+    {
+        console.log(error.code);
+
+        return error;
+    }
+};
+
+module.exports = { insertar, consultar, editar, eliminar, transferir, movimiento };
